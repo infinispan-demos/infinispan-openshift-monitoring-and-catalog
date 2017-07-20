@@ -1,7 +1,7 @@
-TEMPLATES_SHA1 ?= 44f5489
+TEMPLATES_SHA1 ?= 9e6d535
 
 start-openshift-with-catalog:
-	./oc/oc cluster up --metrics=true --service-catalog
+	./oc/oc cluster up --metrics=true --service-catalog --logging
 	./oc/oc login -u system:admin
 	./oc/oc adm policy add-cluster-role-to-user cluster-admin developer
 	./oc/oc login -u developer -p developer
@@ -35,9 +35,9 @@ add-hosa:
 .PHONY: add-hosa
 
 add-templates:
-	./oc/oc delete templates --selector=template=infinispan-persistent
-	./oc/oc delete templates --selector=template=infinispan-ephemeral
-	./oc/oc delete is infinispan
+	./oc/oc delete templates --selector=template=infinispan-persistent || true
+	./oc/oc delete templates --selector=template=infinispan-ephemeral || true
+	./oc/oc delete is infinispan || true
 	
 	rm -rf infinispan-centos7.json
 	rm -rf infinispan-ephemeral.json
