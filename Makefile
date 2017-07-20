@@ -1,12 +1,18 @@
-TEMPLATES_SHA1 ?= 6176084
+TEMPLATES_SHA1 ?= 44f5489
 
-start-openshift:
+start-openshift-with-catalog:
 	./oc/oc cluster up --metrics=true --service-catalog
-	#./oc/oc cluster up --metrics=true --version=latest
 	./oc/oc login -u system:admin
 	./oc/oc adm policy add-cluster-role-to-user cluster-admin developer
 	./oc/oc login -u developer -p developer
-.PHONY: start-openshift
+.PHONY: start-openshift-with-catalog
+	
+start-openshift-without-catalog:
+	./oc/oc cluster up --metrics=true
+	./oc/oc login -u system:admin
+	./oc/oc adm policy add-cluster-role-to-user cluster-admin developer
+	./oc/oc login -u developer -p developer
+.PHONY: start-openshift-without-catalog
 
 stop-openshift:
 	./oc/oc cluster down
@@ -29,6 +35,10 @@ add-hosa:
 .PHONY: add-hosa
 
 add-templates:
+	./oc/oc delete templates --selector=template=infinispan-persistent
+	./oc/oc delete templates --selector=template=infinispan-ephemeral
+	./oc/oc delete is infinispan
+	
 	rm -rf infinispan-centos7.json
 	rm -rf infinispan-ephemeral.json
 	rm -rf infinispan-persistent.json
@@ -41,10 +51,7 @@ add-templates:
 	./oc/oc create -f infinispan-centos7.json || true
 	./oc/oc create -f infinispan-ephemeral.json || true
 	./oc/oc create -f infinispan-persistent.json || true
-	./oc/oc replace -f infinispan-centos7.json || true
-	./oc/oc replace -f infinispan-ephemeral.json || true
-	./oc/oc replace -f infinispan-persistent.json || true
-	./oc/oc adm policy add-cluster-role-to-group system:openshift:templateservicebroker-client system:unauthenticated system:authenticated
+	./oc/oc adm policy add-cluster-role-to-group system:openshift:templateservicebroker-client system:unauthenticated system:authenticated || true
 	./oc/oc project myproject
 .PHONY: add-templates
 
