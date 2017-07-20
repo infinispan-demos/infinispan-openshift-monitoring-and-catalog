@@ -1,4 +1,4 @@
-TEMPLATES_SHA1 ?= bdc551d
+TEMPLATES_SHA1 ?= 6176084
 
 start-openshift:
 	./oc/oc cluster up --metrics=true --service-catalog
@@ -20,9 +20,7 @@ add-hosa:
 	rm -rf hawkular-openshift-agent-configmap.yaml
 	rm -rf hawkular-openshift-agent.yaml
 	
-	wget https://raw.githubusercontent.com/jpkrohling/hawkular-openshift-agent/695fe99d3deb77b497518a8065b36db641ad6401/deploy/openshift/hawkular-openshift-agent-configmap.yaml
-	#wget https://raw.githubusercontent.com/openshift/origin-metrics/enterprise/hawkular-openshift-agent/hawkular-openshift-agent-configmap.yaml
-	#wget https://raw.githubusercontent.com/openshift/origin-metrics/enterprise/hawkular-openshift-agent/hawkular-openshift-agent.yaml
+	wget https://raw.githubusercontent.com/jpkrohling/hawkular-openshift-agent/188a762c62855d7adfdb0244f2dcef45d81323ee/deploy/openshift/hawkular-openshift-agent-configmap.yaml
 	wget https://raw.githubusercontent.com/hawkular/hawkular-openshift-agent/master/deploy/openshift/hawkular-openshift-agent.yaml
 
 	./oc/oc create -f hawkular-openshift-agent-configmap.yaml -n default || true
