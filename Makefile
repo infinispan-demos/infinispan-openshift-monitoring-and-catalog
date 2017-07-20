@@ -1,7 +1,16 @@
-TEMPLATES_SHA1 ?= 9e6d535
+TEMPLATES_SHA1 ?= 72a2d7c
+
+install-oc:
+	rm -rf ./oc/oc
+	mkdir -p /tmp/oc
+	wget -N https://github.com/openshift/origin/releases/download/v3.6.0-rc.0/openshift-origin-client-tools-v3.6.0-rc.0-98b3d56-linux-64bit.tar.gz -O /tmp/oc/oc.tar.gz
+	tar zxf /tmp/oc/oc.tar.gz -C /tmp/oc
+	find /tmp/oc -name oc -type f -exec mv -i {} ./oc \;
+	rm -rf /tmp/oc
+.PHONY: install-oc
 
 start-openshift-with-catalog:
-	./oc/oc cluster up --metrics=true --service-catalog --logging
+	./oc/oc cluster up --metrics=true --service-catalog
 	./oc/oc login -u system:admin
 	./oc/oc adm policy add-cluster-role-to-user cluster-admin developer
 	./oc/oc login -u developer -p developer
@@ -35,8 +44,9 @@ add-hosa:
 .PHONY: add-hosa
 
 add-templates:
-	./oc/oc delete templates --selector=template=infinispan-persistent || true
-	./oc/oc delete templates --selector=template=infinispan-ephemeral || true
+	./oc/oc project openshift
+	./oc/oc delete templates infinispan-ephemeral || true
+	./oc/oc delete templates infinispan-persistent || true
 	./oc/oc delete is infinispan || true
 	
 	rm -rf infinispan-centos7.json
@@ -47,7 +57,6 @@ add-templates:
 	wget https://raw.githubusercontent.com/slaskawi/infinispan-openshift-templates/${TEMPLATES_SHA1}/templates/infinispan-ephemeral.json
 	wget https://raw.githubusercontent.com/slaskawi/infinispan-openshift-templates/${TEMPLATES_SHA1}/templates/infinispan-persistent.json
 	
-	./oc/oc project openshift
 	./oc/oc create -f infinispan-centos7.json || true
 	./oc/oc create -f infinispan-ephemeral.json || true
 	./oc/oc create -f infinispan-persistent.json || true
