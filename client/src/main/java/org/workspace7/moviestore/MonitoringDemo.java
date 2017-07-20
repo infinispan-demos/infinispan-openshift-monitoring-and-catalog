@@ -5,9 +5,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
-import org.infinispan.spring.starter.remote.InfinispanRemoteCacheCustomizer;
-import org.springframework.beans.factory.annotation.Value;
+import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
+import org.infinispan.spring.starter.remote.InfinispanRemoteConfigurer;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -15,43 +16,39 @@ import org.springframework.context.annotation.Configuration;
 
 
 @SpringBootApplication
+@EnableAutoConfiguration
 public class MonitoringDemo {
 
     @Configuration
     public static class HotRodConfiguration {
 
-        @Value("#{environment.SERVER_LIST}")
-        private String serverList;
-
-        @Value("#{environment.USERNAME}")
-        private String username;
-
-        @Value("#{environment.PASSWORD}")
-        private String password;
-
         @Bean
-        public InfinispanRemoteCacheCustomizer customizer() {
-            return b -> b
-                  .addServers(serverList)
-                  //.security().authentication().username(username).password(password.toCharArray()).enable()
-                  ;
+        public InfinispanRemoteConfigurer configuration() {
+            return () -> new ConfigurationBuilder()
+                  .addServers(System.getenv("SERVER_LIST"))
+//                  .security()
+//                    .authentication()
+//                    .enable()
+//                        .username(System.getenv("USERNAME"))
+//                        .password(System.getenv("PASSWORD").toCharArray())
+                  .build();
         }
-        public static void main(String... args) throws InterruptedException {
-            ConfigurableApplicationContext context = SpringApplication.run(MonitoringDemo.class, args);
+    }
 
-            RemoteCacheManager remoteCacheManager = context.getBean(RemoteCacheManager.class);
-            RemoteCache<String, String> cache = remoteCacheManager.getCache();
+    public static void main(String... args) throws InterruptedException {
+        ConfigurableApplicationContext context = SpringApplication.run(MonitoringDemo.class, args);
 
-            cache.put(Long.toString(System.currentTimeMillis()), "Yeah, Infinispan is cool!");
+        RemoteCacheManager remoteCacheManager = context.getBean(RemoteCacheManager.class);
+        RemoteCache<String, String> cache = remoteCacheManager.getCache();
 
-            AtomicInteger numOfEntries = new AtomicInteger();
-            cache.entrySet().forEach(e -> {
-                System.out.println(numOfEntries.getAndIncrement() + " " + e);
-            });
-            System.err.println("Toal entries: " + numOfEntries.get());
+        cache.put(Long.toString(System.currentTimeMillis()), "Yeah, Infinispan is cool!");
 
-            TimeUnit.HOURS.sleep(1);
-        }
+        AtomicInteger numOfEntries = new AtomicInteger();
+        cache.entrySet().forEach(e -> {
+            System.out.println(numOfEntries.getAndIncrement() + " " + e);
+        });
+        System.out.println("Toal entries: " + numOfEntries.get());
 
+        TimeUnit.HOURS.sleep(1);
     }
 }
