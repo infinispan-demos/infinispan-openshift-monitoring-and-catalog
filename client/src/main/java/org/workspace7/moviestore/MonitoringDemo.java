@@ -41,7 +41,9 @@ public class MonitoringDemo {
         RemoteCacheManager remoteCacheManager = context.getBean(RemoteCacheManager.class);
         RemoteCache<String, String> cache = remoteCacheManager.getCache();
 
-        cache.put(Long.toString(System.currentTimeMillis()), "Yeah, Infinispan is cool!");
+        for (int i = 0; i < 10; ++i) {
+            cache.put(Long.toString(System.currentTimeMillis() + i), "Yeah, Infinispan is cool!");
+        }
 
         AtomicInteger numOfEntries = new AtomicInteger();
         cache.entrySet().forEach(e -> {

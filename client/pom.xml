@@ -21,7 +21,7 @@
         <fabric8-maven-plugin.image.name>%a</fabric8-maven-plugin.image.name>
         <fabric8-maven-plugin.resourceDir>${basedir}/src/main/fabric8</fabric8-maven-plugin.resourceDir>
 
-        <fabric8-maven-plugin.secret-name>infinispan-ephemeral-kv4zs-1t4c3</fabric8-maven-plugin.secret-name>
+        <fabric8-maven-plugin.secret-name>infinispan-persistent-btt51-pfs44</fabric8-maven-plugin.secret-name>
     </properties>
 
     <dependencyManagement>
