@@ -1,0 +1,37 @@
+Introduction
+============
+
+This is a demo of Infinispan with Jolokia monitoring turned on.
+
+The demo is based on https://hub.docker.com/r/slaskawi/infinispan-monitoring-demo/ Docker image.
+
+What's in the box
+=================
+
+Images and templates used for this demo contain:
+
+* https://github.com/infinispan/infinispan/pull/5267[Jolokia for Infinispan server]
+* https://github.com/jboss-dockerfiles/infinispan/pull/55[Generating application and management realm password for Docker image]
+* https://github.com/jboss-dockerfiles/infinispan/pull/60[Exposing Jolokia port for Docker image]
+* https://github.com/infinispan/infinispan-openshift-templates/pull/3[Consuming Jolokia information in Pods]
+* https://github.com/infinispan/infinispan-openshift-templates/pull/4[Service Catalog adjustments]
+* https://github.com/infinispan/infinispan-openshift-templates/pull/5[Expose route to the console]
+
+Demo flow
+=========
+
+1. `make start-openshift-with-catalog add-hosa add-templates`
+2. Make sure all pods are running in `default` namespace
+3. Accept all Hawkular certificates
+3. Deploy Infinispan
+4. Scale it to 1 replica
+5. Look at Jolokia console (keep the tab open)
+6. Look at monitoring tab (keep the tab open)
+7. run the client, notice how metrics changed
+8. Scale it back to 3
+9. Run the client again (notice how servers were added/removed to/from the connection pool)
+
+Presentation
+============
+
+https://docs.google.com/a/redhat.com/presentation/d/1quwYHx_WTpp5uFQHVJJGaM61uz1pAgs7p5ADo2mW7OI/edit?usp=sharing
