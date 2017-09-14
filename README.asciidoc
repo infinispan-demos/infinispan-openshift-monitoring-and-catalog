@@ -30,8 +30,3 @@ Demo flow
 7. run the client, notice how metrics changed
 8. Scale it back to 3
 9. Run the client again (notice how servers were added/removed to/from the connection pool)
-
-Presentation
-============
-
-https://docs.google.com/a/redhat.com/presentation/d/1quwYHx_WTpp5uFQHVJJGaM61uz1pAgs7p5ADo2mW7OI/edit?usp=sharing
